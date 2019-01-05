@@ -10,6 +10,7 @@ body {
 
 .container1{
     text-align: center;
+
 }
 
 
@@ -21,10 +22,12 @@ body {
       color: #777777;
       margin-left: 15%;
       margin-right: 15%;
+      padding-left: 50px;
   }
 
 .container3{
     text-align: center;
+    padding-bottom: 100px;
 }
 .col-2 img{
         width: 300px;
@@ -32,4 +35,13 @@ body {
         margin: auto;    
         display: block;
     }
-    
+
+footer{   
+        text-align: center;
+        background: #666666;
+        height: 80px;
+}
+
+.music{
+    padding-top:20px;
+}

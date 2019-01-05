@@ -28,24 +28,34 @@
 <div class="jumbotron jumbotron-fluid">
         <div class="container1">
           <h1 class="display-4">Famous Women</h1>
-          <p class="lead">This is a game of hangman that uses proper nouns of Famous Women throughout History</p>
+          <p class="lead">This is a game of hangman that uses proper nouns of famous women throughout history</p>
             <audio id="applause" src= "assets/audio/applause.wav" type="audio/wav"></audio>   
-            <button type="button" class="btn btn-info" value="Start" id="start" > Applause</button>
+            <button type="button" class="btn btn-info" value="Start" id="start" > Start New Game</button>
         </div>
       </div> 
     
     
 
 <div class = "main-container"> 
-<div class= "container2"> 
-  <div>
-    <p id="guess-letter">Guess what word I'm thinking of: </p>
-    <p id="guesses-so-far">Your guesses so far:</p>
-    <p id="guesses-remaining">Guesses Remaining:</p>
-    <p id="wins-text"> Wins:</p>
-    <!-- <p id="losses-text"> Losses: </p> -->
-    
-  </div>
+    <div class= "container2"> 
+        <div class="row">
+          <div class="col-2">
+                
+          </div>
+          
+            <div class="col-8">
+            <p id="guess-letter">Guess what famous female I'm thinking of: </p>
+            <p id="guesses-so-far">Letters Already Guessed:</p>
+            <p id="guesses-remaining">Number of Guesses Remaining:</p>
+            <p id="wins-text"> Wins:</p>
+            <!-- <p id="losses-text"> Losses: </p> -->
+            <audio id="buzzer" src= "assets/audio/error.wav" type="audio/wav"></audio> 
+          </div>
+          
+          <div class="col-2">
+               
+          </div>
+        </div>
 </div>
 </div>
 
@@ -64,8 +74,11 @@
           </div>
         </div>
       </div>
-      
-
+<Footer>      
+    <audio class="music" loop="loop" autoplay="autoplay" controls="controls">
+    <source src="assets/audio/moonlightsonata.mp3" type="audio/mp3" />
+</audio>
+</Footer>
 </body>
 
 <script type="text/javascript">
@@ -81,7 +94,7 @@ var  userGuesses= [];
 var guessesRemaining;
 
 // Array of famous females
-var famousFemales = ["Susan Weston, Mary Weston, Debbie Dobbs, Ann Stone, Sonja Rasmussen,"]
+var famousFemales = ["Susan Weston", "Mary Weston", "Debbie Dobbs", "Ann Stone", "Sonja Rasmussen"]
 
 //First action is for the computer to randonmly chose a name from the array and store it. create a variable to store the chosen letter.  Set up the alphabet math.  
 var computerChosen;
@@ -98,8 +111,10 @@ var blankLetters;
     var guessesRemainingP = document.getElementById("guesses-remaining");
     var userGuessesP = document.getElementById("guesses-so-far");
 
-$('#start').on('click', function() {
-    $('#applause').get(0).play();
+$('#start').on('click', function () {
+    reset();
+    updateDisplay();
+    
 });
 
 
@@ -110,15 +125,20 @@ function reset() {
     computerChosen = famousFemales[Math.floor(Math.random()*famousFemales.length)];
     blankLetters = [];
     for (i = 0; i < computerChosen.length; i++){
-        blankLetters.push("_")
+        if (computerChosen[i]===" "){
+            blankLetters.push("&nbsp;&nbsp;")
+        }
+        else{ 
+            blankLetters.push("_")    
+        }
     }
 }
         
 function updateDisplay(){       
-        userGuessesP.textContent = "You chose: " + userGuesses.join(" ");
+        userGuessesP.textContent = "Letters already guessed: " + userGuesses.join(" ");
         winsP.textContent = "Wins: " + wins;
-        guessesRemainingP.textContent = "Guesses Remaining: "  + guessesRemaining;
-        computerChosenP.textContent = "Word Chosen: " + blankLetters.join(" ");
+        guessesRemainingP.textContent = "Number of guesses remaining: "  + guessesRemaining;
+        computerChosenP.innerHTML = "Guess what famous female I'm thinking of: " + blankLetters.join(" ");
 
     }   
 
@@ -134,6 +154,14 @@ document.onkeyup = function(event) {
     if(!/^[a-z]$/i.test(userGuess)) {
         return
     }
+    
+//detect if key has already been pressed, if yes, don't add to userGuesses variable
+
+    if(userGuesses.includes(userGuess)){
+        $('#buzzer').get(0).play();
+        return
+    }
+
 
     //2nd step is for the user to guess the letter up to 9 times. user types in a letter, decrease the guesses remaining, put the guess in the array of guesses so far
     guessesRemaining = guessesRemaining-1;
@@ -159,8 +187,9 @@ document.onkeyup = function(event) {
     updateDisplay();
 
     if (userWin() === true) {
-        wins = wins+1;
-        reset();
+       $('#applause').get(0).play();
+       wins = wins+1;
+       updateDisplay(); 
     }
     else if (guessesRemaining === 0){
         reset();
